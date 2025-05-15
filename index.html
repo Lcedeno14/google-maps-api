@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+    <title>CSUN Map Quiz</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="content" role="main">
+        <h1 class="title">CSUN Map Quiz</h1>
+        
+        <!-- Quiz elements -->
+        <div id="quiz">
+          <p id="instructions">
+            <b>Instructions:</b><br />
+            Double click on the map to find the location of...
+          </p>
+          <div id="current-location"></div>
+          <div id="score">Score: 0</div>
+          <button id="resetButton" onclick="resetGame()">Reset Game</button>
+        </div>
+
+        <!-- Map container - now a square -->
+        <div class="content">
+          <div id="map-wrapper">
+            <div id="map"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4uA_8kCr_lXofnUnfZRYXtqRtFr7Ohmc&callback=initMap" async defer></script>
+    <script src="/script.js"></script>
+  </body>
+</html>
