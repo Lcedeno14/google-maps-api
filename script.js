@@ -1,10 +1,10 @@
 // Game state variables (global scope)
 let currentLocationIndex = 0;
 let score = 0;
-let rectangles = [];
+let circles = [];  // Changed from rectangles to circles
 let map;
 let targetLocations = [
-  {
+  {//my assigned location 
     name: "The Soraya",
     lat: 34.23599732969022,
     lng: -118.5285702234408
@@ -25,9 +25,9 @@ let targetLocations = [
     lng: -118.52926416283476
   },
   {
-    name: "Jacaranda Hall",
-    lat: 34.24127063498234,  
-    lng: -118.5288082943056
+    name: "Arbor Grill",
+    lat: 34.24120695567284, 
+    lng: -118.5296588142717 
   }
 ];
 
@@ -50,39 +50,34 @@ function handleGuess(clickedLat, clickedLng) {
 
   const target = targetLocations[currentLocationIndex];
   
-  // Check if the click is within range of the target
-  const isCorrect = 
-    clickedLat <= target.lat + 0.0007 &&
-    clickedLat >= target.lat - 0.0007 &&
-    clickedLng >= target.lng - 0.0007 &&
-    clickedLng <= target.lng + 0.0007;
+  // Calculate distance between clicked point and target
+  const distance = google.maps.geometry.spherical.computeDistanceBetween(
+    new google.maps.LatLng(clickedLat, clickedLng),
+    new google.maps.LatLng(target.lat, target.lng)
+  );
+  
+  // Consider it correct if within 50 meters
+  const isCorrect = distance <= 50;
 
-  // Create rectangle at clicked location
-  const bounds = {
-    north: clickedLat + 0.0005,
-    south: clickedLat - 0.0005,
-    east: clickedLng + 0.0005,
-    west: clickedLng - 0.0005
-  };
-
-  const rectangle = new google.maps.Rectangle({
+  // Create circle at clicked location
+  const circle = new google.maps.Circle({
     strokeColor: isCorrect ? "limegreen" : "red",
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: isCorrect ? "limegreen" : "red",
     fillOpacity: 0.35,
     map: map,
-    bounds: bounds,
+    center: { lat: clickedLat, lng: clickedLng },
+    radius: 25, // 25 meters radius
     clickable: false
   });
 
-  rectangles.push(rectangle);
+  circles.push(circle);
 
   // Shake the map wrapper if the guess is wrong
   if (!isCorrect) {
     const mapWrapper = document.getElementById('map-wrapper');
     mapWrapper.classList.add('shake');
-    // Remove the shake class after animation completes
     setTimeout(() => {
       mapWrapper.classList.remove('shake');
     }, 500);
@@ -149,11 +144,11 @@ function initMap() {
 
 // Reset game function
 function resetGame() {
-  // Clear all rectangles from the map
-  rectangles.forEach(rectangle => {
-    rectangle.setMap(null);
+  // Clear all circles from the map
+  circles.forEach(circle => {
+    circle.setMap(null);
   });
-  rectangles = [];
+  circles = [];
   
   // Reset game state
   score = 0;
